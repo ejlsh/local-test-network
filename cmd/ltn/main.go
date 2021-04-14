@@ -17,8 +17,9 @@ type server struct {
 	pb.UnimplementedGreeterServer
 }
 
-func (s *server) StartNetwork(ctx context.Context, in *pb.StartNetworkRequest) (*pb.StartNetworkResponse, error) {
-	return &pb.StartNetworkResponse{Message: "Hello"}, nil
+func (s *server) StartNetwork(ctx context.Context, in *pb.CreateNetworkRequest) (*pb.CreateNetworkResponse, error) {
+	return &pb.CreateNetworkResponse{Message: "Hello"}, nil
+
 }
 
 func main() {

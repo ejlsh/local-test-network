@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "./";
+option go_package = "github.com/ejlsh/local-test-network/cmd/ltn/proto";
 option java_multiple_files = true;
 option java_outer_classname = "NetworkProto";
 
