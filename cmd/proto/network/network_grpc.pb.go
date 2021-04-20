@@ -18,88 +18,88 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// GreeterClient is the client API for Greeter service.
+// NetworkServiceClient is the client API for NetworkService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type GreeterClient interface {
+type NetworkServiceClient interface {
 	// Sends a greeting
-	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	RunNetwork(ctx context.Context, in *RunNetworkRequest, opts ...grpc.CallOption) (*RunNetworkResponse, error)
 }
 
-type greeterClient struct {
+type networkServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewGreeterClient(cc grpc.ClientConnInterface) GreeterClient {
-	return &greeterClient{cc}
+func NewNetworkServiceClient(cc grpc.ClientConnInterface) NetworkServiceClient {
+	return &networkServiceClient{cc}
 }
 
-func (c *greeterClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
-	out := new(HelloReply)
-	err := c.cc.Invoke(ctx, "/network.Greeter/SayHello", in, out, opts...)
+func (c *networkServiceClient) RunNetwork(ctx context.Context, in *RunNetworkRequest, opts ...grpc.CallOption) (*RunNetworkResponse, error) {
+	out := new(RunNetworkResponse)
+	err := c.cc.Invoke(ctx, "/network.NetworkService/RunNetwork", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// GreeterServer is the server API for Greeter service.
-// All implementations must embed UnimplementedGreeterServer
+// NetworkServiceServer is the server API for NetworkService service.
+// All implementations must embed UnimplementedNetworkServiceServer
 // for forward compatibility
-type GreeterServer interface {
+type NetworkServiceServer interface {
 	// Sends a greeting
-	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
-	mustEmbedUnimplementedGreeterServer()
+	RunNetwork(context.Context, *RunNetworkRequest) (*RunNetworkResponse, error)
+	mustEmbedUnimplementedNetworkServiceServer()
 }
 
-// UnimplementedGreeterServer must be embedded to have forward compatible implementations.
-type UnimplementedGreeterServer struct {
+// UnimplementedNetworkServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedNetworkServiceServer struct {
 }
 
-func (UnimplementedGreeterServer) SayHello(context.Context, *HelloRequest) (*HelloReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
+func (UnimplementedNetworkServiceServer) RunNetwork(context.Context, *RunNetworkRequest) (*RunNetworkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RunNetwork not implemented")
 }
-func (UnimplementedGreeterServer) mustEmbedUnimplementedGreeterServer() {}
+func (UnimplementedNetworkServiceServer) mustEmbedUnimplementedNetworkServiceServer() {}
 
-// UnsafeGreeterServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to GreeterServer will
+// UnsafeNetworkServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to NetworkServiceServer will
 // result in compilation errors.
-type UnsafeGreeterServer interface {
-	mustEmbedUnimplementedGreeterServer()
+type UnsafeNetworkServiceServer interface {
+	mustEmbedUnimplementedNetworkServiceServer()
 }
 
-func RegisterGreeterServer(s grpc.ServiceRegistrar, srv GreeterServer) {
-	s.RegisterService(&Greeter_ServiceDesc, srv)
+func RegisterNetworkServiceServer(s grpc.ServiceRegistrar, srv NetworkServiceServer) {
+	s.RegisterService(&NetworkService_ServiceDesc, srv)
 }
 
-func _Greeter_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
+func _NetworkService_RunNetwork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RunNetworkRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GreeterServer).SayHello(ctx, in)
+		return srv.(NetworkServiceServer).RunNetwork(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/network.Greeter/SayHello",
+		FullMethod: "/network.NetworkService/RunNetwork",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GreeterServer).SayHello(ctx, req.(*HelloRequest))
+		return srv.(NetworkServiceServer).RunNetwork(ctx, req.(*RunNetworkRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Greeter_ServiceDesc is the grpc.ServiceDesc for Greeter service.
+// NetworkService_ServiceDesc is the grpc.ServiceDesc for NetworkService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Greeter_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "network.Greeter",
-	HandlerType: (*GreeterServer)(nil),
+var NetworkService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "network.NetworkService",
+	HandlerType: (*NetworkServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SayHello",
-			Handler:    _Greeter_SayHello_Handler,
+			MethodName: "RunNetwork",
+			Handler:    _NetworkService_RunNetwork_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

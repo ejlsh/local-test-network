@@ -21,17 +21,17 @@ option java_outer_classname = "NetworkProto";
 package network;
 
 // The greeting service definition.
-service Greeter {
+service NetworkService {
   // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
+  rpc RunNetwork (RunNetworkRequest) returns (RunNetworkResponse) {}
 }
 
 // The request message containing the user's name.
-message HelloRequest {
+message RunNetworkRequest {
   string name = 1;
 }
 
 // The response message containing the greetings
-message HelloReply {
+message RunNetworkResponse {
   string message = 1;
 }
