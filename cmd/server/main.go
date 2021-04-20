@@ -24,7 +24,7 @@ import (
 	"log"
 	"net"
 
-	pb "github.com/ejlsh/local-test-network/cmd/server/network/"
+	pb "github.com/ejlsh/local-test-network/cmd/proto/network"
 	"google.golang.org/grpc"
 )
 

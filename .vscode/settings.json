@@ -3,7 +3,7 @@
         "compile_on_save": true,
         "options": [
             "--proto_path=${workspaceRoot}/cmd/proto",
-            "--go_out=${workspaceRoot}/cmd/server"
+            "--go_out=${workspaceRoot}/cmd/proto"
         ]
     }
 }

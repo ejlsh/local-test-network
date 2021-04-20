@@ -14,10 +14,10 @@
 
 syntax = "proto3";
 
-option go_package = "./network";
+option go_package = "github.com/ejlsh/local-test-network/cmd/proto/network";
 option java_multiple_files = true;
 option java_outer_classname = "NetworkProto";
-
+ 
 package network;
 
 // The greeting service definition.
