@@ -2,8 +2,8 @@
     "protoc": {
         "compile_on_save": true,
         "options": [
-            "--proto_path=${workspaceRoot}/cmd/ltn/proto",
-            "--go_out=${workspaceRoot}/cmd/ltn/proto"
+            "--proto_path=${workspaceRoot}/cmd/proto",
+            "--go_out=${workspaceRoot}/cmd/server"
         ]
     }
 }
