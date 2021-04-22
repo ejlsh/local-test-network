@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NetworkServiceClient interface {
-	// Sends a greeting
 	RunNetwork(ctx context.Context, in *RunNetworkRequest, opts ...grpc.CallOption) (*RunNetworkResponse, error)
+	RegisterStakeAddress(ctx context.Context, in *RegisterStakeAddressRequest, opts ...grpc.CallOption) (*RegisterStakeAddressResponse, error)
 }
 
 type networkServiceClient struct {
@@ -43,12 +43,21 @@ func (c *networkServiceClient) RunNetwork(ctx context.Context, in *RunNetworkReq
 	return out, nil
 }
 
+func (c *networkServiceClient) RegisterStakeAddress(ctx context.Context, in *RegisterStakeAddressRequest, opts ...grpc.CallOption) (*RegisterStakeAddressResponse, error) {
+	out := new(RegisterStakeAddressResponse)
+	err := c.cc.Invoke(ctx, "/network.NetworkService/RegisterStakeAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NetworkServiceServer is the server API for NetworkService service.
 // All implementations must embed UnimplementedNetworkServiceServer
 // for forward compatibility
 type NetworkServiceServer interface {
-	// Sends a greeting
 	RunNetwork(context.Context, *RunNetworkRequest) (*RunNetworkResponse, error)
+	RegisterStakeAddress(context.Context, *RegisterStakeAddressRequest) (*RegisterStakeAddressResponse, error)
 	mustEmbedUnimplementedNetworkServiceServer()
 }
 
@@ -58,6 +67,9 @@ type UnimplementedNetworkServiceServer struct {
 
 func (UnimplementedNetworkServiceServer) RunNetwork(context.Context, *RunNetworkRequest) (*RunNetworkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunNetwork not implemented")
+}
+func (UnimplementedNetworkServiceServer) RegisterStakeAddress(context.Context, *RegisterStakeAddressRequest) (*RegisterStakeAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterStakeAddress not implemented")
 }
 func (UnimplementedNetworkServiceServer) mustEmbedUnimplementedNetworkServiceServer() {}
 
@@ -90,6 +102,24 @@ func _NetworkService_RunNetwork_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NetworkService_RegisterStakeAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterStakeAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NetworkServiceServer).RegisterStakeAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/network.NetworkService/RegisterStakeAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NetworkServiceServer).RegisterStakeAddress(ctx, req.(*RegisterStakeAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NetworkService_ServiceDesc is the grpc.ServiceDesc for NetworkService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -100,6 +130,10 @@ var NetworkService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RunNetwork",
 			Handler:    _NetworkService_RunNetwork_Handler,
+		},
+		{
+			MethodName: "RegisterStakeAddress",
+			Handler:    _NetworkService_RegisterStakeAddress_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

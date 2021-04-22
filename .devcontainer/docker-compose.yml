@@ -1,0 +1,13 @@
+version: "3"
+services:
+    local-test-network:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - ..:/workspace:cached
+        cap_add:
+            - SYS_PTRACE
+        security_opt:
+            - seccomp:unconfined
+        command: sleep infinity
