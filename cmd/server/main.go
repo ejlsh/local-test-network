@@ -18,38 +18,37 @@ type server struct {
 	pb.UnimplementedNetworkServiceServer
 }
 
+type NodeNotRunningError struct{}
+
+func (m *NodeNotRunningError) Error() string {
+	return "The node is not running. Slot may be 0."
+}
+
 func (s *server) RunNetwork(ctx context.Context, in *pb.RunNetworkRequest) (*pb.RunNetworkResponse, error) {
-	cli := cardanoCli{}
-	cli.run("topologyFilePath", "databasePath", "socketPath", "configFilePath", "port")
+	cli := CardanoCli{}
+	actions := Actions{}
 
-	retries := 0
+	actions.CreateNetwork()
 
-	for {
-		if retries > 5 {
-			break
-		}
+	// Make this more deterministic with tries
+	time.Sleep(10 * time.Second)
 
-		getTip := cli.shelley.query.Tip()
+	getTip, _ := cli.shelley.query.Tip()
 
-		if getTip.Slot > 0 {
-			break
-		}
-
-		time.Sleep(5000 * time.Millisecond)
-		retries += 1
+	if getTip.Slot > 0 {
+		return nil, &NodeNotRunningError{}
 	}
 
 	return &pb.RunNetworkResponse{Message: "Running Network"}, nil
 }
 
 func (s *server) RegisterStakeAddress(ctx context.Context, in *pb.RegisterStakeAddressRequest) (*pb.RegisterStakeAddressResponse, error) {
-	cli := cardanoCli{}
+	cli := CardanoCli{}
 	cli.shelley.address.keyGen("verificationKeyFileOutputPath", "signingKeyFileOutputPath")
 	cli.shelley.stakeAddress.keyGen("verificationKeyFilePath", "signingKeyFilePath")
 	cli.shelley.address.build("paymentVerificationKeyFilePath", "stakeVerificationKeyFilePath", "outFileOutputPath")
 	cli.shelley.stakeAddress.build("stakeVerificationKeyFilePath", "outFileOutputPath")
 	return &pb.RegisterStakeAddressResponse{Message: "Register Stake Address"}, nil
-
 }
 
 func main() {

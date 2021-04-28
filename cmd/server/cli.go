@@ -8,12 +8,12 @@ import (
 	"os/exec"
 )
 
-type cardanoCli struct {
+type CardanoCli struct {
 	byron   Byron
 	shelley Shelley
 }
 
-func (cli *cardanoCli) run(
+func (cli *CardanoCli) run(
 	topologyFilePath string,
 	databasePath string,
 	socketPath string,
@@ -63,6 +63,34 @@ type Shelley struct {
 }
 
 type Genesis struct{}
+
+func (genesis *Genesis) Create(dir string) {
+	args := []string{
+		"shelley",
+		"genesis",
+		"create",
+		"--genesis-dir", dir,
+	}
+	_, err := exec.Command("cardano-cli", args...).Output()
+	if err != nil {
+		log.Print(err)
+	}
+}
+
+func (genesis *Genesis) KeyGenGenesis(verificationKeyFile string, signingKeyFile string) {
+	args := []string{
+		"shelley",
+		"genesis",
+		"key-gen-genesis",
+		"--verification-key-file", verificationKeyFile,
+		"--signing-key-file", signingKeyFile,
+	}
+	_, err := exec.Command("cardano-cli", args...).Output()
+	if err != nil {
+		log.Print(err)
+	}
+}
+
 type Devops struct{}
 type System struct{}
 type Block struct{}
@@ -81,7 +109,7 @@ func (query *Query) Tip() (QueryTipResponse, error) {
 		"tip",
 		"--mainnet",
 	}
-	out, err := exec.Command("cardano-node", args...).Output()
+	out, err := exec.Command("cardano-cli", args...).Output()
 	if err != nil {
 		log.Print(err)
 	}
@@ -89,6 +117,45 @@ func (query *Query) Tip() (QueryTipResponse, error) {
 	json.Unmarshal([]byte(out), &queryTipResponse)
 
 	return queryTipResponse, nil
+}
+
+type ProtocolParameter struct {
+	TxFeePerByte       int
+	MinUTxOValue       int
+	StakePoolDeposit   int
+	Decentralization   int
+	PoolRetireMaxEpoch int
+	ExtraPraosEntropy  int
+	StakePoolTargetNum int
+	MaxBlockBodySize   int
+	MaxTxSize          int
+	TreasuryCut        string
+	MinPoolCost        int
+	MaxBlockHeaderSize int
+	ProtocolVersion    struct {
+		Minor int
+		Major int
+	}
+	TxFeeFixed          int
+	StakeAddressDeposit int
+	MonetaryExpansion   string
+	PoolPledgeInfluence string
+}
+
+func (query *Query) ProtocolParameters() (ProtocolParameter, error) {
+	args := []string{
+		"query",
+		"protocol-parameters",
+		"--out-file", "protocol.json",
+	}
+	out, err := exec.Command("cardano-cli", args...).Output()
+	if err != nil {
+		log.Print(err)
+	}
+	var protocolParameter ProtocolParameter
+	json.Unmarshal([]byte(out), &protocolParameter)
+
+	return protocolParameter, nil
 }
 
 type StakePool struct{}
